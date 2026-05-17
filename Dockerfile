@@ -21,14 +21,11 @@ COPY . .
 
 # Expose ports
 EXPOSE 8000
-EXPOSE 8501
 
 # Create a startup script
 RUN echo '#!/bin/bash\n\
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 &\n\
-streamlit run frontend/app.py --server.port 8501 --server.address 0.0.0.0\n\
-wait -n\n\
-exit $?' > /app/start.sh && chmod +x /app/start.sh
+uvicorn backend.main:app --host 0.0.0.0 --port 8000\n\
+' > /app/start.sh && chmod +x /app/start.sh
 
 # Run the startup script
 CMD ["/app/start.sh"]

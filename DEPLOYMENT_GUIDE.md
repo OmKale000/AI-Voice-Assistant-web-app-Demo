@@ -1,52 +1,45 @@
 # 🚀 NEXUS AI Deployment Guide
 
-NEXUS AI is designed to be deployment-ready. Follow these steps to host your assistant.
+NEXUS AI is now built with a modern Next.js frontend and a FastAPI backend. This guide covers deploying the backend to Render/Railway and the frontend to Vercel.
 
-## 🐳 Docker Setup Steps (Local or Server)
-Docker ensures the app runs the same way everywhere.
+## 📦 Backend Deployment (Render / Railway)
+The backend (FastAPI) handles LLM routing, Firebase logic, and audio processing.
 
-1.  **Install Docker**: Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows/Mac) or Docker Engine (Linux).
-2.  **Prepare Environment**: Ensure your `.env` file is in the root directory.
-3.  **Build and Start**: Open a terminal in the project root and run:
-    ```bash
-    docker-compose up -d --build
-    ```
-4.  **Verify**: 
-    - Frontend: `http://localhost:8501`
-    - Backend: `http://localhost:8000/health`
-5.  **Stop**: `docker-compose down`
+1. **GitHub Repository**: Push your code to a private GitHub repo.
+2. **Platform Setup (Render example)**:
+   - Create a new **Web Service**.
+   - Select your repository.
+   - Set **Build Command**: `pip install -r requirements.txt`
+   - Set **Start Command**: `uvicorn backend.main:app --host 0.0.0.0 --port 10000`
+3. **Environment Variables**: Add all your keys (GROQ, GEMINI, etc.) to the Render dashboard.
+4. **Deploy**: Get your public URL (e.g., `https://nexus-backend.onrender.com`).
 
 ---
 
-## ☁️ Cloud Deployment Steps (e.g., Render / Railway)
+## ⚡ Frontend Deployment (Vercel)
+The Next.js frontend is optimized for zero-config Vercel deployment.
 
-### Step 1: Push to GitHub
-1. Create a new private repository on GitHub.
-2. Initialize and push your code:
-   ```bash
-   git init
-   git add .
-   git commit -m "initial commit"
-   git remote add origin <your-repo-url>
-   git push -u origin main
-   ```
+1. **Link to Vercel**: Import your GitHub repo into Vercel.
+2. **Root Directory**: Set the **Root Directory** to `frontend`.
+3. **Environment Variables**:
+   - `NEXT_PUBLIC_BACKEND_URL`: Set this to your deployed Backend URL (e.g., `https://nexus-backend.onrender.com`).
+   - `NEXT_PUBLIC_FIREBASE_API_KEY`: Your Firebase API key.
+   - *(Add other Firebase variables from `.env.example` as needed)*
+4. **Deploy**: Vercel will automatically build (`npm run build`) and deploy the app.
 
-### Step 2: Configure Hosting (Render Example)
-1. **New Web Service**: Connect your GitHub repo.
-2. **Build Settings**:
-   - Runtime: `Python`
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `uvicorn backend.main:app --host 0.0.0.0 --port 8000 & streamlit run frontend/app.py --server.port 8501 --server.address 0.0.0.0`
-3. **Environment Variables**: Add all keys from your `.env` (GROQ, GEMINI, etc.).
-4. **Deploy**: Click "Deploy Web Service".
+---
+
+## 🐳 Local Docker Testing
+To run the backend locally via Docker:
+```bash
+docker-compose up -d --build
+```
+*Note: The frontend should be run locally using `cd frontend && npm run dev`.*
 
 ---
 
 ## 🔒 Firebase Security
-1. Go to Google Cloud Console.
-2. Ensure your Service Account has "Firebase Admin" permissions.
-3. If using Docker on a server, mount your `firebase-key.json` safely or use an environment variable to store the JSON string.
+- Ensure your `firebase-key.json` is properly loaded via environment variables or secret mounts in your backend.
+- Set up **Firebase Authentication** (Google / Anonymous) in the Firebase Console so the frontend login works properly.
 
----
-**NEXUS AI V4 Elite** | Designed for Stability and Scale.
-
+**NEXUS AI V5 Elite** | Designed for Stability and Scale.
